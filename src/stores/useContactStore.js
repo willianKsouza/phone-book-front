@@ -4,16 +4,33 @@ import axios from '@/api/axios'
 import { computed } from 'vue'
 
 export const useContactStore = defineStore('contact', () => {
+    const searchQuery = ref('')
     const contacts = ref([])
     const contactsComputed = computed(() => contacts.value)
-    // const favoritesComputed = computed(() => contacts.value.filter(c => c.favorite))
     const isLoadingContacts = ref(true)
     const error = ref(null)
+    const validationErrosApi = ref(null)
 
-    async function getContacts() {
-        error.value = null
+    function setValidationErrors(errorsArray) {
+        const errors = {}
+        errorsArray.forEach(err => {
+            errors[err.field] = err.message
+        })
+        validationErrosApi.value = errors
+    }
+
+    async function getContacts(query, field) {
         try {
-            await axios.get('/api/contacts')
+            await axios.get('/api/contacts',
+                {
+                    params: {
+                        field: field,
+                        value: query,
+                        page: 1,
+                        per_page: 15
+                    }
+                }
+            )
                 .then(({ data }) => {
                     contacts.value = data.data
                     isLoadingContacts.value = false
@@ -34,12 +51,15 @@ export const useContactStore = defineStore('contact', () => {
             const response = await axios.post('/api/contacts', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
-            console.log(response);
 
             if (response.status === 201) {
                 contacts.value.unshift(response.data)
             }
         } catch (err) {
+
+            if (err.response?.status == '422') {
+                setValidationErrors(err.response.data.error.validation_errors)
+            }
 
             if (err.response?.status == '401') {
                 error.value = err.response.data.error.message;
@@ -62,17 +82,31 @@ export const useContactStore = defineStore('contact', () => {
                     }
                 })
         } catch (err) {
-            console.error(err)
+            if (err.response?.status == '401') {
+                error.value = err.response.data.error.message;
+            }
+            else {
+                error.value = 'Ocorreu um erro desconhecido.';
+            }
         }
     }
 
     async function deleteContact(contactId) {
-        error.value = null
         try {
             await axios.delete(`/api/contacts/${contactId}`)
-            contacts.value = contacts.value.filter(c => c.id !== contactId)
+                .then(() => {
+                    const index = contacts.value.findIndex(c => c.id === contactId)
+                    if (index !== -1) {
+                        contacts.value.splice(index, 1)
+                    }
+                })
         } catch (err) {
-            console.log(err);
+            if (err.response?.status == '401') {
+                error.value = err.response.data.error.message;
+            }
+            else {
+                error.value = 'Ocorreu um erro desconhecido.';
+            }
 
         }
     }
@@ -94,13 +128,20 @@ export const useContactStore = defineStore('contact', () => {
             });
 
         } catch (err) {
-            return
+            if (err.response?.status == '401') {
+                error.value = err.response.data.error.message;
+            }
+            else {
+                error.value = 'Ocorreu um erro desconhecido.';
+            }
         }
     }
 
     return {
         contactsComputed,
         isLoadingContacts,
+        validationErrosApi,
+        searchQuery,
         getContacts,
         createContact,
         updateContact,

@@ -22,18 +22,6 @@ const router = createRouter({
       name: 'create',
       component: () => import('@/views/CreateContactView.vue'),
       meta: { requiresAuth: true },
-    },
-    {
-      path: '/trashed',
-      name: 'trashed',
-      component: () => import('@/views/TrashedView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/favorites',
-      name: 'favorites',
-      component: () => import('@/views/FavoritesView.vue'),
-      meta: { requiresAuth: true },
     }
   ],
 })

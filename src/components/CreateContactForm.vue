@@ -50,11 +50,10 @@ function onFileChange(e) {
   if (!file) {
     return
   }
-
+  
   const result = avatarSchema.safeParse({ avatar: file })
   
   if (!result.success) {
-   
     avatarZodErrors.value = 'a imagem deve ser png, jpeg ou webp'
     return
   }
@@ -79,21 +78,21 @@ async function submit() {
     email: form.value.email,
     phone: form.value.phone,
   })
-
+  
+  
   if (!result.success) {
     result.error.issues.forEach((issue) => {
       formZodErrors.value[issue.path[0]] = issue.message
     })
     return
   }
-
-  if (avatarFile.value) {
-    formData.append('avatar', avatarFile.value)
-  }
+  formData.append('avatar', avatarFile.value)
 
   try {
     await contactStore.createContact(formData)
-
+    if (contactStore.validationErrosApi) {
+      return
+    }
     router.push({ name: 'home' })
   } catch (error) {
     console.log('errooo', error)
@@ -179,6 +178,11 @@ async function submit() {
           >
             {{ formZodErrors.email }}
           </p>
+          <div>
+            <p v-for="(err, index) in contactStore.validationErrosApi" :key="index">
+              {{ err }}
+            </p>
+          </div>
           <div class="flex items-center gap-2 mt-4">
             <FormButton
               title="Back"

@@ -1,11 +1,11 @@
 <script setup>
 import { ref } from 'vue'
-import CardContact from './CardContact.vue'
+import CardContact from '@/components/CardContact.vue'
 import { Grip } from 'lucide-vue-next'
-import CreateContact from './CreateContactButton.vue'
-import { useContactStore } from '@/stores/useContactStore'
-import ContactSkeleton from './ContactSkeleton.vue'
-import ContactProfileModal from './modals/ContactProfileModal.vue'
+import { useContactStore } from '../stores/useContactStore'
+import ContactSkeleton from '@/components/ContactSkeleton.vue'
+import ContactProfileModal from '@/components/modals/ContactProfileModal.vue'
+import CreateContactButton from './CreateContactButton.vue'
 
 const contactsStore = useContactStore()
 const contactProfileData = ref(null)
@@ -20,10 +20,10 @@ const openContactProfileModal = (contact) => {
 </script>
 <template>
   <section>
-    <div class="grid grid-cols-2 xs:grid-cols-3 gap-4 justify-between md:grid-cols-4">
-      <div class="">Name ({{ contactsStore.contactsComputed.length }})</div>
-      <div class="hidden xs:block">Phone</div>
-      <div class="hidden md:block">Email</div>
+    <div class="grid grid-cols-2 xs:grid-cols-3 gap-x-4 justify-between md:grid-cols-4 border-b pb-2 border-secondary">
+      <div class="text-primary font-semibold">Name ({{ contactsStore.contactsComputed.length }})</div>
+      <div class="text-primary font-semibold hidden xs:block">Phone</div>
+      <div class="text-primary font-semibold hidden md:block">Email</div>
       <div class="justify-self-end text-secondary mr-2">
         <Grip />
       </div>
@@ -46,7 +46,7 @@ const openContactProfileModal = (contact) => {
         @click="openContactProfileModal(contact)"
       />
     </div>
-    <CreateContact class="ml-auto" />
+    <CreateContactButton class="ml-auto" />
     <Teleport to="body">
         <ContactProfileModal 
             v-if="showContactProfileModal"

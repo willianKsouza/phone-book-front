@@ -1,12 +1,15 @@
 <script setup>
-import { Camera, Pencil, Trash2, X } from 'lucide-vue-next'
+import { Camera, Info, Pencil, Trash2, X } from 'lucide-vue-next'
 import FormInput from '@/components/FormInput.vue'
 import { ref, watch } from 'vue'
 import z from 'zod'
 import { useContactStore } from '@/stores/useContactStore'
+import DeleteContactWarningModal from '@/components/modals/DeleteContactWarningModal.vue'
+import InfoContactCard from '@/components/InfoContactCard.vue'
+import FormButton from '@/components/FormButton.vue'
+import WarningValidationComponent from '@/components/WarningValidationComponent.vue'
 
-
-defineEmits(['close-modal'])
+const emit = defineEmits(['close-modal'])
 
 const contactStore = useContactStore()
 
@@ -22,9 +25,7 @@ const loading = ref(false)
 
 const errorSubmitForm = ref(false)
 
-const isEdit = ref(false)
-
-const isDelete = ref(true)
+const controlViewComponent = ref('info')
 
 
 const form = ref({
@@ -120,6 +121,14 @@ async function submit() {
   }
 }
 
+
+async function deleteContact() {
+  await contactStore.deleteContact(form.value.id)
+  emit('close-modal')
+
+}
+
+
 watch(
   () => props.contact,
   (contact) => {
@@ -170,24 +179,30 @@ watch(
       <div class="p-2 flex justify-end">
         <div class="ml-auto flex items-center gap-2">
           <div
-            @click="isEdit = !isEdit"
+            @click="controlViewComponent = 'info'"
+            class="size-10 rounded-full flex items-center justify-center hover:bg-primary"
+          >
+            <Info class="text-secondary" />
+          </div>
+          <div
+            @click="controlViewComponent = 'edit'"
             class="size-10 rounded-full flex items-center justify-center hover:bg-primary"
           >
             <Pencil class="text-secondary" />
           </div>
-          <div class="size-10 rounded-full flex items-center justify-center hover:bg-primary">
+          <div
+            @click="controlViewComponent = 'delete'"
+            class="size-10 rounded-full flex items-center justify-center hover:bg-primary"
+          >
             <Trash2 class="text-secondary" />
           </div>
         </div>
       </div>
       <div>
-        <p
+        <WarningValidationComponent
           v-if="avatarZodErrors"
-          class="text-red-500 text-sm p-4"
-        >
-          {{ avatarZodErrors }}
-        </p>
-
+          :msgError="avatarZodErrors"
+        />
         <div
           v-if="isUpdated"
           class="w-full bg-button text-white font-semibold p-2 rounded-lg transition duration-200 flex justify-center items-center min-h-10 my-4"
@@ -199,113 +214,88 @@ watch(
           <span v-else>Saved</span>
         </div>
       </div>
-      <div>
-        <form
-          v-if="isEdit"
-          class="space-y-6"
-          @submit.prevent="submit"
-        >
-          <FormInput
-            label="Name"
-            placeholder="Name"
-            v-model="form.name"
-          />
-          <p
-            v-if="formZodErrors.name"
-            class="text-red-500 text-sm mt-1"
-          >
-            {{ formZodErrors.name }}
-          </p>
-          <FormInput
-            label="Phone"
-            placeholder="Phone"
-            v-model="form.phone"
-          />
-          <p
-            v-if="formZodErrors.phone"
-            class="text-red-500 text-sm mt-1"
-          >
-            {{ formZodErrors.phone }}
-          </p>
-          <FormInput
-            label="E-mail"
-            placeholder="E-mail"
-            v-model="form.email"
-          />
-          <p
-            v-if="formZodErrors.email"
-            class="text-red-500 text-sm mt-1"
-          >
-            {{ formZodErrors.email }}
-          </p>
-          <div v-if="errorSubmitForm">
-            <p class="text-red-500">Ocorreu um erro ao atualizar o contato.</p>
-          </div>
-          <div class="flex items-center gap-2 mt-4">
-            <button
-              class="w-full border border-gray-400 hover:bg-button text-gray-700 font-semibold py-3 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-button focus:ring-offset-2 flex justify-center items-center min-h-12"
-              @click="$emit('close-modal')"
-            >
-              Back
-            </button>
-            <button
-              type="submit"
-              :disabled="loading"
-              class="w-full bg-button hover:bg-button text-white font-semibold py-3 px-4 rounded-lg transition duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-button focus:ring-offset-2 flex justify-center items-center min-h-12"
-            >
-              <span
-                v-if="loading"
-                class="spinner"
-              ></span>
-              <span v-else>Save</span>
-            </button>
-          </div>
-        </form>
+
+      <Transition
+        name="slide-fade"
+        mode="out-in"
+      >
         <div
-          v-else
+          v-if="controlViewComponent === 'info'"
+          key="info"
           class="bg-primary text-white rounded p-4 shadow-md min-h-32 flex flex-col justify-center"
         >
-          <div
-            v-if="isDelete"
-            class=" flex items-center justify-center"
-          >
-            <div class="bg-primary rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
-              <h2 class="text-lg font-semibold mb-4">Confirmar exclusão</h2>
-              <p class="mb-6 text-white">
-                Tem certeza que deseja deletar este contato?
-              </p>
-              <div class="flex justify-between gap-4">
-                <button
-                  @click="isDelete = false"
-                  class="w-1/2 py-2 px-4 border border-gray-300 rounded-lg hover:bg-black/30 transition"
-                >
-                  Cancelar
-                </button>
-                <button
-                  @click="deleteContact(form.id)"
-                  class="w-1/2 py-2 px-4 bg-secondary text-white rounded-lg hover:bg-secondary/60 transition"
-                >
-                  Deletar
-                </button>
-              </div>
-            </div>
-          </div>
-
-
-
-          <ul v-else class="space-y-2">
-            <li class="text-2xl font-bold tracking-wide capitalize">{{ form.name }}</li>
-            <li class="text-base opacity-90 flex items-center gap-2">
-              <span class="material-icons text-sm opacity-80">Phone</span>
-              {{ form.phone }}
-            </li>
-            <li class="text-base opacity-90 flex items-center gap-2">
-              <span class="material-icons text-sm opacity-80">E-mail</span>
-              {{ form.email }}
-            </li>
-          </ul>
+          <InfoContactCard
+            :name="form.name"
+            :phone="form.phone"
+            :email="form.email"
+            :created_at="contact.created_at"
+          />
         </div>
-      </div>
+        <div
+          v-else-if="controlViewComponent === 'edit'"
+          key="edit"
+        >
+          <form
+            class="space-y-6"
+            @submit.prevent="submit"
+          >
+            <FormInput
+              label="Name"
+              placeholder="Name"
+              v-model="form.name"
+            />
+            <WarningValidationComponent
+              v-if="formZodErrors.name"
+              :msgError="formZodErrors.name"
+            />
+
+            <FormInput
+              label="Phone"
+              placeholder="Phone"
+              v-model="form.phone"
+            />
+            <WarningValidationComponent
+              v-if="formZodErrors.phone"
+              :msgError="formZodErrors.phone"
+            />
+
+            <FormInput
+              label="E-mail"
+              placeholder="E-mail"
+              v-model="form.email"
+            />
+            <WarningValidationComponent
+              v-if="formZodErrors.email"
+              :msgError="formZodErrors.email"
+            />
+
+            <WarningValidationComponent
+              v-if="errorSubmitForm"
+              msgError="Ocorreu um erro ao atualizar o contato."
+            />
+
+            <div class="flex items-center gap-2 mt-4">
+              <FormButton
+                title="Back"
+                mode="secondary"
+                @click="$emit('close-modal')"
+              />
+              <FormButton
+                title="Save"
+                :loading="loading"
+                :disabled="loading"
+              />
+            </div>
+          </form>
+        </div>
+
+        <DeleteContactWarningModal
+          v-else-if="controlViewComponent === 'delete'"
+          @close-warning="controlViewComponent = 'info'"
+          @confirm-warning="deleteContact"
+          key="delete"
+        />
+      </Transition>
     </div>
   </div>
 </template>
@@ -323,5 +313,18 @@ watch(
   to {
     transform: rotate(360deg);
   }
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(10px);
 }
 </style>

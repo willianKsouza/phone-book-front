@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from '@/api/axios'
+import { computed } from 'vue'
+import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
     const user = ref(null)
+    const userComputed = computed(() => user.value)
     const isAuthenticated = ref(false)
     const error = ref(null)
 
@@ -39,9 +42,14 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function logout() {
-        await axios.post('/logout')
-        user.value = null
-        isAuthenticated.value = false
+        await axios.post('/api/logout')
+            .then(() => {
+                user.value = null
+                isAuthenticated.value = false
+                 router.push({ name: 'login' })
+            })
+       
+
     }
 
     async function checkAuthOnInit() {
@@ -57,6 +65,7 @@ export const useAuthStore = defineStore('auth', () => {
         user,
         isAuthenticated,
         error,
+        userComputed,
         login,
         getProfile,
         checkAuthOnInit,

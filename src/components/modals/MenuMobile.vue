@@ -2,9 +2,12 @@
 import { useMenuMobileStore } from '@/stores/useMenuMobileStore'
 import { ArrowLeft } from 'lucide-vue-next'
 import FormButton from '@/components/FormButton.vue'
-import { Trash2 } from 'lucide-vue-next'
+import { useAuthStore } from '@/stores/useAuthStore'
+import CreateContactButton from '../CreateContactButton.vue'
 
 const MenuMobileStore = useMenuMobileStore()
+const authStore = useAuthStore()
+
 </script>
 <template>
   <section
@@ -19,27 +22,14 @@ const MenuMobileStore = useMenuMobileStore()
         <p class="text-lg font-medium">Back</p>
       </div>
       <div>
-        <h1 class="text-lg font-bold text-primary">Nick Name</h1>
-        <h2 class="text-zinc-400">Email@gmail.com</h2>
+        <h1 class="text-lg font-bold text-primary">{{ authStore.userComputed.name }}</h1>
+        <h2 class="text-zinc-400">{{ authStore.userComputed.email }}</h2>
       </div>
       <nav class="grow">
-        <ul class="space-y-2">
-          <li class="flex items-center gap-2 bg-primary px-1 py-2 rounded-lg">
-            <Trash2 class="text-secondary h-5 w-5" />
-            <span class="text-lg translate-y-0.5 font-medium text-white">Trashed</span>
-          </li>
-          <li class="flex items-center gap-2 bg-primary px-1 py-2 rounded-lg">
-            <Trash2 class="text-secondary h-5 w-5" />
-            <span class="text-lg translate-y-0.5 font-medium text-white">Trashed</span>
-          </li>
-          <li class="flex items-center gap-2 bg-primary px-1 py-2 rounded-lg">
-            <Trash2 class="text-secondary h-5 w-5" />
-            <span class="text-lg translate-y-0.5 font-medium text-white">Trashed</span>
-          </li>
-        </ul>
+        <CreateContactButton :mobile="true"/>
       </nav>
       <div>
-        <FormButton title="Logout" mode="secondary" />
+        <FormButton @click="authStore.logout" title="Logout" mode="secondary" />
       </div>
     </div>
   </section>

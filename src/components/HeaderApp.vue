@@ -1,8 +1,8 @@
 <script setup>
 import { useAuthStore } from '@/stores/useAuthStore'
-import { BookUser, Menu, LogOut, Star, Trash2 } from 'lucide-vue-next'
+import { BookUser, Menu, LogOut } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue'
-import MenuMobile from './modals/MenuMobile.vue'
+import MenuMobile from '@/components/modals/MenuMobile.vue'
 import { useMenuMobileStore } from '@/stores/useMenuMobileStore'
 
 const profile = ref('')
@@ -17,7 +17,7 @@ onMounted(() => {
   <header class="w-full bg-primary">
     <div class="flex items-center justify-between">
       <nav class="flex items-center gap-2 lg:hidden">
-        <Menu class="text-white" @click="MenuMobileStore.toggleMenu" />
+        <Menu class="text-white cursor-pointer hover:text-secondary active:text-secondary" @click="MenuMobileStore.toggleMenu" />
         <Transition name="slide-fade">
           <MenuMobile v-if="MenuMobileStore.isMenuOpen" />
         </Transition>
@@ -27,30 +27,18 @@ onMounted(() => {
         <BookUser class="text-secondary" />
       </div>
     </div>
-    <div class="lg:flex flex-row-reverse items-center justify-between">
-      <nav class="hidden lg:block">
+    <div class="md:flex flex-row-reverse items-baseline justify-between">
+      <nav class="hidden md:block">
         <ul class="flex items-center gap-4">
           <li>
-            <RouterLink class="flex items-center gap-1 p-2" :to="{ name:'trashed'}">
-              <Trash2 class="text-secondary h-5 w-5" />
-              <span class="text-lg translate-y-0.5 font-medium text-white">Trashed</span>
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink class="flex items-center gap-1 p-2" :to="{ name:'favorites'}">
-              <Star class="text-secondary h-5 w-5" />
-              <span class="text-lg translate-y-0.5 font-medium text-white">Favorites</span>
-            </RouterLink>
-          </li>
-          <li>
-            <button class="flex items-center gap-2 bg-secondary px-2 py-0.5 rounded-lg">
+            <button class="flex items-center gap-2 bg-secondary px-2 py-0.5 rounded-lg md:mt-2">
               <LogOut class="text-white" />
               <span class="text-lg font-medium text-white">Logout</span>
             </button>
           </li>
         </ul>
       </nav>
-      <h1 class="text-lg font-medium text-white mt-1 text-end lg:text-start">
+      <h1 class="text-lg  font-medium text-white mt-1 text-end md:text-start">
         Welcome, {{ profile.name }}
       </h1>
     </div>
