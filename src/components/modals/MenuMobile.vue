@@ -1,7 +1,7 @@
 <script setup>
 import { useMenuMobileStore } from '@/stores/useMenuMobileStore'
 import { ArrowLeft } from 'lucide-vue-next'
-import FormButton from './FormButton.vue'
+import FormButton from '@/components/FormButton.vue'
 import { Trash2 } from 'lucide-vue-next'
 
 const MenuMobileStore = useMenuMobileStore()

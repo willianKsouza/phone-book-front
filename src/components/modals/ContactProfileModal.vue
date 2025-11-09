@@ -1,9 +1,10 @@
 <script setup>
-import { Camera, X } from 'lucide-vue-next'
-import FormInput from './FormInput.vue'
+import { Camera, Pencil, Trash2, X } from 'lucide-vue-next'
+import FormInput from '@/components/FormInput.vue'
 import { ref, watch } from 'vue'
 import z from 'zod'
 import { useContactStore } from '@/stores/useContactStore'
+
 
 defineEmits(['close-modal'])
 
@@ -20,6 +21,11 @@ const isUpdated = ref(false)
 const loading = ref(false)
 
 const errorSubmitForm = ref(false)
+
+const isEdit = ref(false)
+
+const isDelete = ref(true)
+
 
 const form = ref({
   id: '',
@@ -105,7 +111,9 @@ async function submit() {
   }
   try {
     await contactStore.updateContact(form.value).finally(() => {
-      loading.value = false
+      setTimeout(() => {
+        loading.value = false
+      }, 1000)
     })
   } catch (err) {
     errorSubmitForm.value = true
@@ -159,6 +167,19 @@ watch(
           @change="submitUploadAvatar"
         />
       </div>
+      <div class="p-2 flex justify-end">
+        <div class="ml-auto flex items-center gap-2">
+          <div
+            @click="isEdit = !isEdit"
+            class="size-10 rounded-full flex items-center justify-center hover:bg-primary"
+          >
+            <Pencil class="text-secondary" />
+          </div>
+          <div class="size-10 rounded-full flex items-center justify-center hover:bg-primary">
+            <Trash2 class="text-secondary" />
+          </div>
+        </div>
+      </div>
       <div>
         <p
           v-if="avatarZodErrors"
@@ -180,6 +201,7 @@ watch(
       </div>
       <div>
         <form
+          v-if="isEdit"
           class="space-y-6"
           @submit.prevent="submit"
         >
@@ -239,6 +261,50 @@ watch(
             </button>
           </div>
         </form>
+        <div
+          v-else
+          class="bg-primary text-white rounded p-4 shadow-md min-h-32 flex flex-col justify-center"
+        >
+          <div
+            v-if="isDelete"
+            class=" flex items-center justify-center"
+          >
+            <div class="bg-primary rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
+              <h2 class="text-lg font-semibold mb-4">Confirmar exclusão</h2>
+              <p class="mb-6 text-white">
+                Tem certeza que deseja deletar este contato?
+              </p>
+              <div class="flex justify-between gap-4">
+                <button
+                  @click="isDelete = false"
+                  class="w-1/2 py-2 px-4 border border-gray-300 rounded-lg hover:bg-black/30 transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  @click="deleteContact(form.id)"
+                  class="w-1/2 py-2 px-4 bg-secondary text-white rounded-lg hover:bg-secondary/60 transition"
+                >
+                  Deletar
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+
+          <ul v-else class="space-y-2">
+            <li class="text-2xl font-bold tracking-wide capitalize">{{ form.name }}</li>
+            <li class="text-base opacity-90 flex items-center gap-2">
+              <span class="material-icons text-sm opacity-80">Phone</span>
+              {{ form.phone }}
+            </li>
+            <li class="text-base opacity-90 flex items-center gap-2">
+              <span class="material-icons text-sm opacity-80">E-mail</span>
+              {{ form.email }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

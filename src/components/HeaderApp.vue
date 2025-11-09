@@ -2,7 +2,7 @@
 import { useAuthStore } from '@/stores/useAuthStore'
 import { BookUser, Menu, LogOut, Star, Trash2 } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue'
-import MenuMobile from './MenuMobile.vue'
+import MenuMobile from './modals/MenuMobile.vue'
 import { useMenuMobileStore } from '@/stores/useMenuMobileStore'
 
 const profile = ref('')

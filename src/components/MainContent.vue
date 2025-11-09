@@ -5,7 +5,7 @@ import { Grip } from 'lucide-vue-next'
 import CreateContact from './CreateContactButton.vue'
 import { useContactStore } from '@/stores/useContactStore'
 import ContactSkeleton from './ContactSkeleton.vue'
-import ContactProfileModal from './ContactProfileModal.vue'
+import ContactProfileModal from './modals/ContactProfileModal.vue'
 
 const contactsStore = useContactStore()
 const contactProfileData = ref(null)
@@ -13,7 +13,7 @@ const contactProfileData = ref(null)
 const showContactProfileModal = ref(false)
 
 const openContactProfileModal = (contact) => {
-  showContactProfileModal.value = !showContactProfileModal.value
+  showContactProfileModal.value = true
   contactProfileData.value = contact
 }
 
@@ -21,7 +21,7 @@ const openContactProfileModal = (contact) => {
 <template>
   <section>
     <div class="grid grid-cols-2 xs:grid-cols-3 gap-4 justify-between md:grid-cols-4">
-      <div class="">Name ({{ contactsStore.contacts.length }})</div>
+      <div class="">Name ({{ contactsStore.contactsComputed.length }})</div>
       <div class="hidden xs:block">Phone</div>
       <div class="hidden md:block">Email</div>
       <div class="justify-self-end text-secondary mr-2">
@@ -37,7 +37,7 @@ const openContactProfileModal = (contact) => {
       </div>
       <CardContact
         v-else
-        v-for="contact in contactsStore.contacts"
+        v-for="contact in contactsStore.contactsComputed"
         :name="contact.name"
         :phone="contact.phone"
         :email="contact.email"

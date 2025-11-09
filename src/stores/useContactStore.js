@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import axios from '@/api/axios'
+import { computed } from 'vue'
 
 export const useContactStore = defineStore('contact', () => {
     const contacts = ref([])
+    const contactsComputed = computed(() => contacts.value)
+    // const favoritesComputed = computed(() => contacts.value.filter(c => c.favorite))
     const isLoadingContacts = ref(true)
     const error = ref(null)
 
@@ -49,19 +52,15 @@ export const useContactStore = defineStore('contact', () => {
 
     async function updateContact(data) {
         error.value = null
-        
-
         try {
-            const response = await axios.patch(`/api/contacts/${data.id}`, data)
-            console.log(response);
-
-            if (response.statusText == '200') {
-                const index = contacts.value.findIndex(c => c.id === data.id)
-                if (index !== -1) {
-                    contacts.value[index] = { ...response.data }
-                }
-                console.log(contacts.value);
-            }
+            await axios.patch(`/api/contacts/${data.id}`, data)
+                .then(({ data }) => {
+                    const index = contacts.value.findIndex(c => c.id === data.id)
+                    if (index !== -1) {
+                        contacts.value.splice(index, 1)
+                        contacts.value.unshift(data)
+                    }
+                })
         } catch (err) {
             console.error(err)
         }
@@ -100,7 +99,7 @@ export const useContactStore = defineStore('contact', () => {
     }
 
     return {
-        contacts,
+        contactsComputed,
         isLoadingContacts,
         getContacts,
         createContact,
