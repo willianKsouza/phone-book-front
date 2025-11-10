@@ -31,7 +31,9 @@ onMounted(() => {
       <nav class="hidden md:block">
         <ul class="flex items-center gap-4">
           <li>
-            <button class="flex items-center gap-2 bg-secondary px-2 py-0.5 rounded-lg md:mt-2">
+            <button
+            @click="authStore.logout"
+            class="flex items-center gap-2 bg-secondary px-2 py-0.5 rounded-lg md:mt-2">
               <LogOut class="text-white" />
               <span class="text-lg font-medium text-white">Logout</span>
             </button>

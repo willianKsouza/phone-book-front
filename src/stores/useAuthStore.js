@@ -43,13 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function logout() {
         await axios.post('/api/logout')
-            .then(() => {
-                user.value = null
-                isAuthenticated.value = false
-                 router.push({ name: 'login' })
-            })
-       
-
+        router.push({ name: 'login' })
     }
 
     async function checkAuthOnInit() {

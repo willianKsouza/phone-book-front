@@ -42,7 +42,7 @@ watch(
       <Search class="text-secondary" />
     </div>
 
-    <div class="flex items-center gap-4 mt-3 px-2">
+    <div class="flex flex-wrap items-center gap-4 mt-3">
       <label
         v-for="field in fields"
         :key="field.value"
