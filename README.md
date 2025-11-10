@@ -59,3 +59,4 @@ No diretório do projeto, você pode executar vários scripts:
 -   `npm run format`: Executa o Prettier para formatar todos os arquivos no diretório `src/`.
 
 link no youtube: https://www.youtube.com/watch?v=pRgvHfulOmM
+link mostrando um pouco do responsivo do app: https://youtu.be/GV6XMf1C3ts
