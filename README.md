@@ -1,44 +1,35 @@
-# phone-book-front
+🎨 Frontend - Task Manager
+Frontend desenvolvido em Vue 3 usando Composition API, Vite e ferramentas modernas.
+🚀 Tecnologias
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 - Framework JavaScript progressivo
+Vite - Build tool rápido e moderno
+Vue Router - Gerenciamento de rotas
+Pinia - Gerenciamento de estado
+Axios - Cliente HTTP para requisições API
+TailwindCSS - Framework CSS utility-first
 
-## Recommended IDE Setup
+📋 Pré-requisitos
+Antes de começar, você precisa ter instalado:
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Node.js (versão 18+ recomendada)
 
-## Recommended Browser Setup
+Verifique se estão instalados:
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+ Instalação
 
-## Customize configuration
+1. Clone o repositório
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+bash git clone https://github.com/seu-usuario/task-manager.git
 
-## Project Setup
+cd task-manager/frontend
 
-```sh
+2. Instale as dependências
+
 npm install
-```
 
-### Compile and Hot-Reload for Development
+🎯 Executando o Projeto
 
-```sh
 npm run dev
-```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+O aplicativo estará disponível em: http://localhost:5173
