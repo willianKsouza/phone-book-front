@@ -24,4 +24,4 @@ Este é o repositório do frontend para a aplicação de Agenda de Contatos. A a
 Antes de começar, você vai precisar ter instalado em sua máquina as seguintes ferramentas:
 -   [Node.js](https://nodejs.org/en/) (versão `^20.19.0` ou `>=22.12.0`)
 -   [NPM](https://www.npmjs.com/) (geralmente vem com o Node.js)
-- 
+
